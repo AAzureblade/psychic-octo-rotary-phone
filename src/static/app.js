@@ -363,6 +363,16 @@ document.addEventListener("DOMContentLoaded", () => {
     return "academic";
   }
 
+  // Helper function to show visual feedback on copy button
+  function showCopyFeedback(button) {
+    const icon = button.querySelector(".share-icon");
+    const originalIcon = icon.textContent;
+    icon.textContent = "✓";
+    setTimeout(() => {
+      icon.textContent = originalIcon;
+    }, 2000);
+  }
+
   // Function to handle sharing activities
   function handleShare(event, activityName, details) {
     const button = event.currentTarget;
@@ -375,8 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
       : "copy";
 
     // Create share URL and text
-    const currentUrl = window.location.href.split("?")[0];
-    const shareUrl = `${currentUrl}?activity=${encodeURIComponent(
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?activity=${encodeURIComponent(
       activityName
     )}`;
     const formattedSchedule = formatSchedule(details);
@@ -419,13 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .writeText(shareUrl)
             .then(() => {
               showMessage("Link copied to clipboard!", "success");
-              // Add visual feedback to the button
-              const icon = button.querySelector(".share-icon");
-              const originalIcon = icon.textContent;
-              icon.textContent = "✓";
-              setTimeout(() => {
-                icon.textContent = originalIcon;
-              }, 2000);
+              showCopyFeedback(button);
             })
             .catch((err) => {
               console.error("Failed to copy:", err);
@@ -442,12 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
           try {
             document.execCommand("copy");
             showMessage("Link copied to clipboard!", "success");
-            const icon = button.querySelector(".share-icon");
-            const originalIcon = icon.textContent;
-            icon.textContent = "✓";
-            setTimeout(() => {
-              icon.textContent = originalIcon;
-            }, 2000);
+            showCopyFeedback(button);
           } catch (err) {
             console.error("Failed to copy:", err);
             showMessage("Failed to copy link", "error");
