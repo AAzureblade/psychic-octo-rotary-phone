@@ -863,36 +863,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Dark mode functionality
   const darkModeToggle = document.getElementById("dark-mode-toggle");
-  const themeIcon = darkModeToggle.querySelector(".theme-icon");
+  
+  if (darkModeToggle) {
+    const themeIcon = darkModeToggle.querySelector(".theme-icon");
 
-  // Check for saved dark mode preference
-  function initializeDarkMode() {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark-mode");
+    // Check for saved dark mode preference
+    function initializeDarkMode() {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        updateThemeIcon();
+      }
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      const isDarkMode = document.body.classList.contains("dark-mode");
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
       updateThemeIcon();
     }
-  }
 
-  // Toggle dark mode
-  function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-    const isDarkMode = document.body.classList.contains("dark-mode");
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    updateThemeIcon();
-  }
+    // Update the theme icon based on current mode
+    function updateThemeIcon() {
+      const isDarkMode = document.body.classList.contains("dark-mode");
+      if (themeIcon) {
+        themeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+      }
+    }
 
-  // Update the theme icon based on current mode
-  function updateThemeIcon() {
-    const isDarkMode = document.body.classList.contains("dark-mode");
-    themeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+    // Event listener for dark mode toggle
+    darkModeToggle.addEventListener("click", toggleDarkMode);
+    
+    // Initialize dark mode
+    initializeDarkMode();
   }
-
-  // Event listener for dark mode toggle
-  darkModeToggle.addEventListener("click", toggleDarkMode);
 
   // Initialize app
-  initializeDarkMode();
   checkAuthentication();
   initializeFilters();
   fetchActivities();
